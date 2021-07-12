@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple URL Shortener in .NET 6</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <link rel="stylesheet" href="https://unpkg.com/mvp.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>Simple URL Shortener in .NET 6</h1>
+    </header>
+    <main>
+      <section>
+        <aside id="urlForm" style="width: 25rem">
+          <label>
+            Enter your link below to retrieve its short URL
+            <input
+              type="url"
+              id="url"
+              name="url"
+              style="width: 22rem; margin: 0.5rem 0"
+            />
+          </label>
+
+          <button
+            type="button"
+            onclick="submitUrl()"
+            style="padding: 0.5rem 1rem"
+          >
+            Shorten
+          </button>
+          <p id="urlResult"></p>
+        </aside>
+      </section>
+    </main>
+    <script>
+      document
+        .getElementById('url')
+        .addEventListener('keyup', function (event) {
+          if (event.code === 'Enter') {
+            event.preventDefault();
+            submitUrl();
+          }
+        });
+
+      function submitUrl() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/url', true);
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              const url = JSON.parse(xhr.responseText).url;
+              const section = document.getElementById('urlResult');
+              section.innerHTML = `<a id="link" href="${url}">${url}</a>`;
+            } else {
+              alert(xhr.responseText);
+            }
+          }
+        };
+
+        xhr.send(JSON.stringify({ url: document.getElementById('url').value }));
+      }
+    </script>
+  </body>
+</html>
