@@ -168,6 +168,7 @@ docker run -it mcr.microsoft.com/dotnet/sdk:6.0-alpine sh
 ```bash
 docker build -t url-shortener-net6 .
 docker run -it --rm -p 8080:80 url-shortener-net6
+# then visit http://localhost:8080/
 ```
 
 ## License

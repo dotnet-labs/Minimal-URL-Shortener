@@ -1,11 +1,4 @@
-using System;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Http;
 using LiteDB;
-using System.Threading.Tasks;
-using System.Linq;
 using Microsoft.AspNetCore.WebUtilities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +27,7 @@ await app.RunAsync();
 
 static async Task ShortenerDelegate(HttpContext httpContext)
 {
-    var request = await httpContext.Request.ReadFromJsonAsync<UrlDto>();
+    var request = await httpContext.Request.ReadFromJsonAsync<UrlDto>() ?? new UrlDto();
 
     if (!Uri.TryCreate(request.Url, UriKind.Absolute, out var inputUri))
     {
@@ -80,5 +73,5 @@ public class ShortUrl
 
 public class UrlDto
 {
-    public string Url { get; set; }
+    public string Url { get; set; } = string.Empty;
 }
