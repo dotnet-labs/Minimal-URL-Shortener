@@ -24,12 +24,13 @@ app.MapPost("/url", ShortenerDelegate);
 app.MapFallback(RedirectDelegate);
 
 await app.RunAsync();
+return;
 
 static async Task ShortenerDelegate(HttpContext httpContext)
 {
-    var request = await httpContext.Request.ReadFromJsonAsync<UrlDto>() ?? new UrlDto();
+    var request = await httpContext.Request.ReadFromJsonAsync<string>() ;
 
-    if (!Uri.TryCreate(request.Url, UriKind.Absolute, out var inputUri))
+    if (!Uri.TryCreate(request, UriKind.Absolute, out var inputUri))
     {
         httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
         await httpContext.Response.WriteAsync("URL is invalid.");
@@ -41,11 +42,12 @@ static async Task ShortenerDelegate(HttpContext httpContext)
     var entry = new ShortUrl(inputUri);
     links.Insert(entry);
 
-    var result = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/{entry.UrlChunk}";
+    var urlChunk = WebEncoders.Base64UrlEncode(BitConverter.GetBytes(entry.Id));
+    var result = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/{urlChunk}";
     await httpContext.Response.WriteAsJsonAsync(new { url = result });
 }
 
-static async Task RedirectDelegate(HttpContext httpContext)
+static Task RedirectDelegate(HttpContext httpContext)
 {
     var db = httpContext.RequestServices.GetRequiredService<ILiteDatabase>();
     var collection = db.GetCollection<ShortUrl>();
@@ -56,22 +58,11 @@ static async Task RedirectDelegate(HttpContext httpContext)
 
     httpContext.Response.Redirect(entry?.Url ?? "/");
 
-    await Task.CompletedTask;
+    return Task.CompletedTask;
 }
 
-public class ShortUrl
+internal class ShortUrl(Uri url)
 {
     public int Id { get; protected set; }
-    public string Url { get; protected set; }
-    public string UrlChunk => WebEncoders.Base64UrlEncode(BitConverter.GetBytes(Id));
-
-    public ShortUrl(Uri url)
-    {
-        Url = url.ToString();
-    }
-}
-
-public class UrlDto
-{
-    public string Url { get; set; } = string.Empty;
+    public string Url { get; protected set; } = url.ToString();
 }

@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simple URL Shortener in .NET 6</title>
+    <title>Simple URL Shortener in .NET 8</title>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
     <link rel="stylesheet" href="https://unpkg.com/mvp.css" />
   </head>
 
   <body>
     <header>
-      <h1>Simple URL Shortener in .NET 6</h1>
+      <h1>Simple URL Shortener in .NET 8</h1>
     </header>
     <main>
       <section>
@@ -63,7 +63,7 @@
           }
         };
 
-        xhr.send(JSON.stringify({ url: document.getElementById('url').value }));
+        xhr.send(JSON.stringify(document.getElementById('url').value));
       }
     </script>
   </body>

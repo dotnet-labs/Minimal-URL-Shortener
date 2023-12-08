@@ -1,4 +1,6 @@
-# Minimal APIs in ASP.NET 6
+# Minimal APIs in ASP.NET 8
+
+## The solution is updated to .NET 8
 
 <a href='https://ko-fi.com/changhuixu' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi3.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
